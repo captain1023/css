@@ -148,7 +148,7 @@ note:
 除非特别制定，否则所有的元素盒子都会在常规文档流中生成，即position的属性默认为static(位置由元素在html中的位置绝对)
 
 
-块级盒子会沿着锤子方向堆叠，盒子在垂直方向上的艰巨有他们的上下外边距决定
+块级盒子会沿着垂直方向堆叠，盒子在垂直方向上的间距有他们的上下外边距决定
 
 行内盒子是沿着文本流水品排列的，也会随着文本行换行而换行。他们之间的水平间距可以通过水平方向的内边距、边框和外边距调节。但行内盒子但高度不受其为垂直方向上的内边距、边框、外边距影响。此外给行内盒子明确设置高度和宽度也不会起作用
 
@@ -193,3 +193,372 @@ atom真的蛮好用的哈哈哈哈哈哈哈
 End
 
 ## 网页排版
+
+ps。今天突然知道留学生要提前一年参加秋招，突然感觉时间紧 任务重 不过好在已经开始自己学习课外的东西了 争取一个月看完这三本关于前段开发的书 并且同时要刷算法题和计算机网络 还有数据库 还有实战项目 准备参加今年秋招 希望不会太惨
+
+文本颜色 --- color
+字体族(font family)属性的值是一个被选字体的列表，按优先级从左到右排列
+
+```
+body {
+  font-family : 'Georigia Pro',Georgial,Times
+}
+h1,h2,h3,h4,h5,h6 {
+  font-family : Avenir Next,SegoeUI,arial
+}
+```
+
+body元素使用的字体依次是 'Georigia Pro', Georgial, Times 如果没有则会选择下一个
+
+
+字体与字型
+所有浏览器font-size的默认大小是16像素，我们不修改默认的font-size，而是选择使用em单位调整特定元素的大小
+em单位用于font-size属性时，实际上是一个相应元素 **继承** 的font-size缩放因子。比如我们的h3元素，字型大小就是1.314*16=21px
+rem单位则是相对于根元素，基与html的font-size缩放
+```
+h1,h2,h3,h4,h5,h6{
+  margin-top:1.5rem /*24px*/
+}
+```
+当em用于计算盒模型的大小时，它不是基于继承的font-size，而是基于元素自身计算的font-size。因此，不同级别的标题对应的font-size不一样
+为了得到一致的值，要么使用rem 要么对每个标题级别分别以em计算margin-top的值
+
+line-height:行高 行间距 一般设置为1.2-1.5之间，一般不会去设置单位，意思是当前的font-size的1.5倍。body的font-size为16px那么line-height=24px
+如果给line-height设置像素值，百分比值或者em值，子元素继承的是一个固定的数值而不是一个系数。
+不设置单位则继承的是一个和自己font-size成正比的系数
+
+#### 文本粗细 font-weight
+一般直接给出关键词 normal、bold、bolder、lighter
+也可以直接给出数值 100 200 都是100的整倍数
+
+#### 大小写转换 text-transform：uppercase lowercase capitalize
+
+#### 文本缩进 text-indent
+
+#### text-align   left right center justify
+给text-align属性应用justify值，可以在但此间平均分布间距，结果就是左右两端对齐，消除毛边
+
+####  `@font-face规则`
+
+嵌入Web的字体的关键是@font-face规则。通过它可以制定浏览器下载Web字体的服务器地址、以及如果在样式表中引用改字体
+```
+  @font-face{
+    font-family:Vollkorn;
+    font-weight:bold;
+    src:url("fonts/vollkorn/Vollkorn-Bold.woff") format('woff')  
+  }
+  h1,h2,h3,h4,h5,h6{
+    font-family:Vollkorn,Georgia,serif;
+    font-weight:bold;
+  }
+```
+
+前面@font-face块生命了在font-family值为Vollkorn且为粗体时应用该规则。之后提供了URL
+生命了新字体后就可以通过css中的font-family属性正常使用它
+
+#### 字距调整
+```
+.kern{
+  font-kerning:normal;(auto)
+  font-feature-settings:"kern";
+}
+
+```
+### 文本特效
+文本阴影 text-shadow
+```
+h1 {
+  text-shadow:-.2em .4em .2em     #ccc
+  //         x轴    y轴  模糊距离  颜色   模糊距离=0（不模糊）
+}
+```
+
+### 背景颜色透明度
+rgba-> red grenn blue alpha->代表控制透明度的通道 [0-1]
+opacity同样可以控制透明度
+区别在于opacity使得元素透明后 元素内容也同样变透明了 无法让其子元素变得不透明
+
+####图片的位置
+
+background-position：一般是给两个值 一个表示相对于左侧的偏移量，一个是表示相对于右侧的偏移量
+
+background-clip属性可以剪裁图片大小 boarder-box、padding-box、context-box 剪裁掉这三个box之外的图片
+
+background-attachment 背景会附着在制定元素的后面
+
+background-size 明确指定一个值，可以重新设置图片的大小，也可以让它随元素大小缩放而缩放
+
+background-size关键词 contain 让浏览器尽可能保持图片最大化，同时不改变图片的宽高比 浏览器自动绝对哪边用100%哪边用auto
+
+                      cover 图片会缩放以保证覆盖元素的每一个像素，同时不会变形
+
+
+```
+.profile-box{
+  background-size:400px, 240px;
+}
+```
+
+要让图片随着元素缩放而缩放，则必须使用百分比值。百分比值是相对于容器大小而不是相对于图片的大小
+因此一般不讲图片的宽度和高度都设置成百分比值，可能会因容器的高度变化而导致图片变形
+更好的做法是值给一个纬度设置百分比值，另一个纬度设置关键词auto
+```
+.profile-box{
+  background-size:100% auto
+
+}
+```
+
+
+ background属性简写
+```
+.profile-box{
+  background:url(img/cat.jpg) 50% 50% / cover no-repeat padding-box content-box #bada55;
+}
+```
+因为background的属性有两个长度 background-postion 和background-size 要先写position后写size且数值后面以/分开
+
+### 边框半径：圆角
+border-radius:0.5em 2em 0,5em 2em 表示从左上角开始按顺时针方向依次列出各个值
+
+正圆:border-raidus:50% 胶囊两头的半圆border-radius:9999rem（不是百分比的任意大的数值）
+
+### 边框图片 border-image
+会自动讲图片分成9块 中间那块被content-box取代
+### 盒阴影 box-shadow  和text-shadow一样
+相比text-shadow新增扩展半径 可以在模糊半径后面再加一个值、用于表示扩展阴影的大小。这个值默认为0，即阴影于所属元素一样大。增大这个值，阴影相应增大
+
+新增内阴影inset
+
+把元素当成投影表面，可以创造一种背景被镂空的效果。
+
+### 略过了渐变 阴影 理解范围之外了
+
+### 可伸缩的图片模式
+```
+img{
+  max-width:100%；
+}
+```
+max-width属性意味着图片会随着包含它的容器缩小而缩小，但在容器变大时，他不会大到超过自身固有尺寸。
+
+控制对象大小的新方法 一个矩形的图片想设置成方形可以使用object-fit属性，不会破坏原图像的宽高比
+![avatar](/Users/shuophone0432346234/Desktop/前端学习资料/精通css/object-fit.png)
+
+
+### 可保持宽高比的容器
+对于具有固定宽高比的图可以把高度设置为auto只改变宽度
+对于没有固定宽高比的元素：iframe  object
+通过padding-bottom来实现一个<div>包装标签
+padding-bottom值为%的时候是根据定位块的width去计算
+```
+.object-wrapper{
+  width:100%;
+  height:0;
+  padding-bottom:75%
+}
+4/3的宽高比的容器
+
+尽管包装元素的高度是0，仍然可以通过绝对定位把嵌入对象放到一个可保持宽高比的内边距盒子理
+.object-wrapper{
+  width:100%;
+  height:0;
+  position:relative;
+  padding-bottom:75%;
+}
+
+.object-wrapper iframe{
+  postion:absolute;
+  width:100%;
+  height:0;
+  padding-bottom:75%
+}
+
+```
+
+
+
+### 内容布局
+
+
+css中负外边距是有效的
+左边或者上边的负外边距会把像素向左或者向上拉
+右边或者下边的负外边距会把相邻的元素向左或者向上拉
+
+
+#### 水平布局
+
+
+### 使用表格显示属性实现布局
+
+```
+.navbar ul {      //ul是css的列表样式：纵向
+  width:100%;
+  display:table;
+  table-layout :fixed;
+}
+
+.navbar li{       //li是css的的列表内容
+  width:25%;
+  display:table-cell;//table-cell 横向排列
+}
+```
+>display:table-cell；绝对是一个现代的布局神器。
+
+用float来做布局触发的问题比较多，例如要清除浮动，元素浮动后还会导致该元素脱离文档流，即使你清除float，该元素依旧是脱离文档流。
+
+左右布局能用display:inline-block;布局我就用它来布局，但是还是无法完全不使用它，很多布局例如需要靠左和靠右的布局场景下就没办法不去使用float来布局。
+元素两端对齐
+第一个案例是让两个元素分别向左和向右对齐，如果是过去，我一定会用float来实现，但其实用table可以这么做：
+
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style type="text/css">
+        *{
+            box-sizing:border-box;
+         }
+
+        .content{
+            display: table;
+            border:1px solid #06c;
+            padding:15px 15px;
+            max-width: 1000px;
+            margin:10px auto;
+            min-width: 320px;
+            width:100%;
+         }
+
+        .box{
+            width:100px;
+            height:100px;
+            border:1px solid #ccc;
+            text-align: center;
+            display: inline-block;
+            font-size: 40px;
+            line-height: 100px;
+        }
+       .right{
+            text-align: right;
+            display: table-cell;
+        }
+       .left{
+            text-align: left;
+            display: table-cell;
+        }     
+    </style>
+</head>
+<body>
+   <div class="content">
+        <div class="left">
+             <div class="box">B</div>
+        </div>
+        <div class="right">
+             <div class="box">A</div>
+        </div>
+   </div>
+</body>
+</html>
+```
+>>自动平均划分每个小模块，使其一行显示
+
+遇到上面这种布局，一般会用float来做，或者把每个li设置成display:inline-block;来做，并且都要设置给他们设置一个宽度，而且最痛苦的是5个li如果你设置width:20%;他们一定会掉下来，如果li都设置成display:table-cell；就不会出现这种情况，即使不设置宽度他们也会在一行显示，你在加多一行他也不会掉下来，依旧会在一样显示。
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <title></title>
+   <style type="text/css">
+         *{
+           box-sizing:border-box;
+          }
+
+         .content{
+             display: table;
+             border:1px solid #06c;
+             padding:15px 15px;
+             max-width: 1000px;
+             margin:10px auto;
+             min-width:320px;
+             width:100%;
+         }
+        .content ul{
+             display: table;
+             width:100%;
+             padding:0;
+             border-right:1px solid #ccc;
+         }
+
+        .content ul li{
+            display: table-cell;
+            border:1px solid #ccc;
+            text-align: center;
+            height:100px;
+            border-right: none;
+            line-height: 100px;
+         }
+   </style>
+</head>
+<body>
+   <div class="content">
+       <ul>
+         <li>1</li>
+         <li>2</li>
+         <li>3</li>
+         <li>4</li>
+         <li>5</li>
+      </ul>
+   </div>
+</body>
+</html>
+```
+>图片垂直居中于元素
+
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+       <meta charset="UTF-8">
+       <title></title>
+       <style type="text/css">
+        *{
+            box-sizing:border-box;
+         }
+
+        .content{
+            display: table;
+            border:1px solid #06c;
+            padding:15px 15px;
+            max-width: 1000px;
+            margin:10px auto;
+            min-width:320px;
+            width:100%;
+         }
+        .img-box{
+            height:150px;
+            width:100px;
+            border:1px solid red;
+            display: table-cell;
+            vertical-align: middle;
+            text-align: center;
+            background-color: #4679bd;
+        }
+       </style>
+ </head>
+ <body>
+      <div class="content">
+            <div class="img-box">
+               ![logo](http://upload-images.jianshu.io/upload_images/1432546-53d1c7f44dc6e873.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+            </div>
+      </div>  
+ </body>
+ </html>
+ ```
+
+2020.7.28
+END 女朋友夸我这个学习的笔记了 开心😄
+### flex box
