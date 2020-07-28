@@ -25,6 +25,9 @@ p {
 blockquote p {
   padding-lef:2em;
 }
+.class1 .class2{
+  只会应用到应用class1的内容中应用class2的元素
+}
 ```
 **descendant selector(后代选择器)**:只会应用到block quote中到p段落 缩进2em
 
