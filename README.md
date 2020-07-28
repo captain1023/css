@@ -562,3 +562,64 @@ css中负外边距是有效的
 2020.7.28
 END 女朋友夸我这个学习的笔记了 开心😄
 ### flex box
+加油 晚上还要和朋友学怎么用ps做简历、
+
+flexbox可以针对页面中某一区域、控制其中元素的顺序、大小、分布及对齐。这个区域内的盒子可以沿着两个方向排列：默认水平排列(成一行),也可以垂直排列(成一列)。这个排列方向成为主轴。
+
+与主轴垂直的方向成为辅轴，区域内的盒子可以沿辅轴发生位移或者伸缩
+justify-content用于指定排布方式，其默认值是flex-start，表示按照当前文本方向排序(flex-end,center,space-between,space-around)
+flexbox不允许通过以上这些关键字指定个别项的排布方式。然而,对flexbox的子项指定值为auto的外边距可以让该外边距扩展占据可用空间。
+
+因此可以制造出一项在左侧 剩余的在右侧
+
+```
+.navbar li:first-child {
+  margin-right:auto
+}
+```
+辅轴对齐
+align-items控制辅轴对齐属性
+默认值stretch，子项默认拉伸填满可用空间
+flex-start center flex-end 可选
+容器的基线由较大的活动项决定 其他的和基线对齐
+
+flexbox垂直对齐
+在容器里面只有一个元素的时候，只要将容器设置为flex，再将需要居中的元素的外边距设置为auto就行了（外边距会自动扩展填充）
+
+也可使用justify-content algin-items 垂直居中
+
+
+
+
+flexbox的相关属性
+  1.flex-basis:控制项目在主轴方向上、经过修正之前的"首选"大小(width或height)。可以是长度值(18em)、百分比(相对于容器的主轴而已),也可以是关键字auto(默认值)
+  2.flex-grow
+  设置了一个flex项主尺寸的flex增长系数。它指定了flex容器中剩余空间的多少应该分配给项目（flex增长系数）剩余的空间是flex容器的大小减去所有flex项的大小加起来的大小。如果所有的兄弟项目都有相同的flex-grow系数，那么所有的项目将获得相同的剩余空间，否则将根据不同的flex-grow系数定义的比例进行分配。
+
+3.flex-shrink
+  于flex-grow作用相反，空间不够后怎么收缩。
+
+flexbox计算过程
+ 1.检查flex-basis,确定假象的主尺寸
+ 2.确定实际的主尺寸。如果按照flex-basis把各项拍排布好之后，容器内还有剩余空间，那么他们可以伸展。伸展多少由flex-grow系数决定。相应的，如果容器装不下那么多项，则根据flex-shrink系数决定各项如何收缩。
+一次性设置flex-grow、flex-shrink、flex-basis
+```
+.navbar li {
+  flex: 1 0 0%
+}
+flex-basis必须带单位(%,px)
+```
+
+
+```
+.tags {
+  display:flex; 将元素列表转换成flex box
+  flex-wrap:wrap; 告诉子元素可以折行
+  margin:0;
+  padding:0;
+  list-style:none;
+}
+```
+flex-direction:row-reverse 可以反转行中标签的排布方向(默认从左到右 row-reverse后 从右到左)
+flex-warp：wrap-reverse也可以反转垂直排布的方向，让第一行从底部开始向上折行
+css属性flex-grow
