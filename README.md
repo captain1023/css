@@ -625,4 +625,132 @@ flex-basis必须带单位(%,px)
 ```
 flex-direction:row-reverse 可以反转行中标签的排布方向(默认从左到右 row-reverse后 从右到左)
 flex-warp：wrap-reverse也可以反转垂直排布的方向，让第一行从底部开始向上折行
-css属性flex-grow
+
+
+
+#2020.7.29 今天不想看书 不想看书 不想看书
+今天不想学习不想学习不想学习、不学不行啊 不学没有好工作 没有好工作就没有女朋友
+
+##页面布局
+固定布局：页面具有特定的宽度
+弹性布局：布局元素的尺寸使用em单位。这样即使用户缩放文本大小，布局的比例也不会变
+流流布局：页面元素按比例缩放，但元素与元素之间的比率保持不变（web的默认模式）
+网格布局：display:grid
+
+网格布局
+```
+.grid-a {
+  display:grid;
+  grid-template-rows:300px 300px;         //定义row的宽度和高度 支持auto关键词
+  grid-template-columns:1fr 1fr 1fr 1fr;  //4列等宽 可以换成repeat(4,1fr)
+                                          //每个网络格项没有特定的元素表示 无法通过
+                                          //max-width or min-width 指定大小
+                                          //可以使用minmax函数指定
+
+  grid-template-rows:auto minmax(4em,1fr) // 最后一行至少4em高，相距相等的可用空间   
+}
+
+```
+grid-tempale语法糖
+```
+.grid-a{
+  display:grid;
+  gird-template:auto minmax(4em,1fr) minmax(4em,1fr) / repeat(5,1fr)
+  //前面是行 后面是列 用/隔开
+
+}
+
+```
+
+添加网络项需要同时指定两个维度上起止的网格编号
+```
+.subsection-header{
+  grid-row-start:1;
+  grid-column-start:1;
+  gird-row-end:4;
+  gird-column-end:2;
+}
+```
+语法糖
+
+```
+.subsection-header{
+  grid-row:1/4；     //grid支持(-) -1表示最后一个一个网格轨道的终止网格线的编号
+  gird-column:1/2    //默认的跨度是一个网格单元
+  //上面两行改写为
+  grid-row:1/-1;
+  grid-column:1
+}
+
+```
+语法糖
+```
+.subsection-header{
+  grid-area:1/1/-1    /* 1/1/1-1/1 */ 省略最后一个默认跨度1
+                      /* row-start,column-start,row-end,column-end*/
+}
+
+```
+垂直对齐:align-items align-self 水平对齐:justify-items justify-self
+align对-items目标整个网格
+align-self 网络项
+
+
+###自动网格定位
+默认机制 ，不会改面网格项的源代码次序。所有网格项自动从第一行第一个可用的网格单元开始，逐列填充。一行填满后，网格会自动开启下一行并继续填充
+
+```
+.grid-a{                                //定义网格    基于浮动实现 个人感觉不会常用
+  display:grid;
+  grid-template-rows:auto auto auto;
+  grid-template-columns:repeat(5,1fr)
+}
+
+.subcategory-header{                    //定义标题区域
+  grid-row:1/-1
+}
+
+.story-featured{                        //重点文章看跨两列
+  grid-column: span 2;
+}
+```
+
+
+###网络模版区
+实现了可视化网格布局
+
+```
+.grid-b {
+  display:grid;
+  grid-template-columns:20% 1fr 1fr 1fr;
+  grid-template-areas: "hd st1 . st2"
+                       "hd st1 . st2"
+
+/*
+grid-template-areas 属性的值是以空格分割的字符串列表，每个字符串本身是空格分割的自定义标示符，标示网格中的一行，其中每个标示符标示一列。跨行or跨列相邻的同名网络单元构成命名网格区。命名网格区必须是矩形。用点号标示的区域是匿名单元，没有名字
+
+*/
+
+}
+
+```
+
+将网络项放到放格中仍然使用gird-area属性
+```
+.grid-b .subcategory-header{
+  grid-area : hd;
+}
+.grid-b .story:nth-child(2){
+  grid-area : st1;          //使用了伪类nth-child，找到当前元素的兄弟元素并标记
+}
+.grid-b .story:nth-child(3){
+  grid-area : st2;
+}
+
+
+```
+
+2020.7.30
+今儿还看了看react的<route> 不知道应该记些什么 以后可能还会去看react的document 以后可以补上
+done
+#响应式web设计于css
