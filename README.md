@@ -754,3 +754,154 @@ grid-template-areas 属性的值是以空格分割的字符串列表，每个字
 今儿还看了看react的<route> 不知道应该记些什么 以后可能还会去看react的document 以后可以补上
 done
 #响应式web设计于css
+单个手机屏幕：一列 按照重要性排列下来
+
+浏览器窗口增大，在一行内可以显示两个小的报道
+
+```
+@media only screen and (min-width:35em)   /* media 类似if(窗口至少15m)*/
+.row-quarter > *{                         /*想这样引入媒体查询的宽度值，就叫做断点*/
+  width:50%;
+}
+.subcategory-featured{
+  width:100%;
+}
+```
+
+2020.8.3
+最近忙着搬家 收拾行李以及和女朋友讨论一些未来的事情 可能大学毕业刚进入社会的大家都是迷茫的
+平复了一下这两天急躁的心情 还是决定做好眼前的事情  希望自己可以养成一个可以读书学习的习惯
+
+
+
+###浏览视口
+视口:浏览器显示网页的矩形区域。有多少可用空间
+
+css像素 != 屏幕的物理像素(取决于硬件、操作系统、浏览器、用户是否缩放了页面)
+默认视口:模拟一个类似移动设备的视口，在其中显示缩小后的页面
+理想视口:和设备自身尺寸接近的视口。(手机宽度在300-500css像素之间 平板:800-1400)
+
+配置视口
+在页面的头部元素加入
+```
+<meta name="viewport" content="width=device-width",inital-scale="1">
+                            //width可选为像素        缩放比例
+```
+
+###媒体类型:
+依据设备能力来分离样式的能力，始于媒体类型。(常用 screen、print、all)
+```
+//html
+<link rel="stylesheet" herf="main.css" media="screen,print" >
+//css
+@media print{
+  .smallprint{
+    font-size:11pt;
+  }
+}
+```
+
+CSS3新增Media Queries
+
+```
+<link rel="stylesheet" herf="main.css" media="screen and (min-width:600px)" >
+//声明用于屏幕媒体，而且媒体条件是视口至少600css像素宽。
+//可以使用爱and () ,(or)
+@media screen and (min-width:600px){
+  /* 规则*/
+}
+
+//可以仅在宽度小于高度时候使用
+@media(orientation:portrait){
+  /* 屏幕是竖着的时候 */
+}
+
+@media(min-aspect-ratio:16/9){
+
+    /*宽高比至少为16:9时应用*/
+}
+```
+
+###几种响应式布局的设计模式
+
+flexbox:盒子的大小根据盒子的内容来改变
+
+
+响应式背景图片
+
+```
+//小视口
+.profile-box{
+  height:300px;
+  background-size:cover;
+  background-image:url(img/small-cat.jpg)
+}
+//在视口变大时，背景图片会自动变大(因为设置了background-size:cover)
+//如果图片变大 图片会模糊 要切换为大图
+
+@media only screen and (min-wdith:600px){
+  .profile.box{
+    height:600px:
+    background-image:url(img/big-cat.jpg)
+  }
+}
+```
+
+使用分辨率查询切换图片
+
+```
+// -webit-min-device-pixel-ration:1.5 主要针对safari 只有值没有单位
+//min-resolution 分辨率 单位是dppx（dive-pixels per pixel,每个css像素对应的设备像素）
+@media (-webit-min-device-pixel-ration:1.5),
+       (min-resolution:1.5dpx){
+         .profile-box{
+           background-image:url(medium-cat.jpg)
+         }
+       }
+```
+
+
+相应式嵌入媒体：将视频放入响应式容器中（固定宽高比的容器）
+
+srcset属性
+
+```
+/*默认分辨率加载600*300的图片，像素比高的时候加载两倍大的图片*/
+<img src="img/600*300.png srcset="img/1200*600.png 1.5x" alt="dummy inmage">
+//src只能切换图片但没办法控制图片的显示尺寸 为此添加了sizes属性
+<img src="img/xsamll.png"
+     srcset="img/xsmall.png" 300w,
+            img/small.png" 400w,    
+            img/medium.png" 600w,
+            img/large.png" 800w,
+            img/xlarge.png 1200w"
+     sizes="(min-width:70em):12.6875em,                 /*size对面上面的srcset*/
+            (min-width:50em) calc(25vw*0.95 -2.75em),
+            (min-width:35em) calc(25vw *0.95 -2.75em),
+            cal(95vw-1.375em)"
+alt = "Dummy image">
+
+```
+
+picture元素:
+1.解决响应式图片在小屏幕和大屏幕上分别需要不同的裁切方式，毕竟尺寸和浏览范围不一样，类似与背景图片的裁切。如果使用srcset/sizes，那么浏览器也许会假定所有源文件的宽高比都相同只是分辨率不同。
+2.支持更多图片格式
+
+```
+<picutre>
+<source type="image/webp"
+srcset="img/xsmall.png" 300w,
+       img/small.png" 400w,    
+       img/medium.png" 600w,
+       img/large.png" 800w,
+       img/xlarge.png 1200w"
+sizes="(min-width:70em):12.6875em,                 /*size对面上面的srcset*/
+       (min-width:50em) calc(25vw*0.95 -2.75em),
+       (min-width:35em) calc(25vw *0.95 -2.75em),
+       cal(95vw-1.375em)"
+alt = "Dummy image"/>
+</picutre>
+```
+
+
+##表单与数据表
