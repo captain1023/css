@@ -166,3 +166,28 @@ var fibonacci = memoizer([0, 1], function (recur, n) {
 
 
  ```
+
+
+##继承
+Javascript是一门基于原型的语言，这意味着对象直接从其他对象继承。
+####对象说明符
+在这种情况下，如果我们在编写构造器时让它接受一个简单的对象说明符，可能会更 加友好。那个对象包含了将要构建的对象规格说明。所以，与其这样写:
+```
+    var myObject = maker(f, l, m, c, s);
+
+    //改良后
+    var myObject = maker({
+       first: f,
+       middle: m,
+       last: l,
+       state: s,
+       city: c
+       });
+
+```
+
+##正则表达式
+
+
+END
+这本书的基本部分看完了 剩下的糟粕的没有看但占据了很大但篇幅
