@@ -192,3 +192,9 @@ Javascript是一门基于原型的语言，这意味着对象直接从其他对�
 END
 这本书的基本部分看完了 剩下的糟粕的没有看但占据了很大但篇幅
 接下来打算看看express框架并且实战
+
+
+
+promise的then方法传入的是一个callback函数的参数，
+1.callback函数为匿名函数的时候，call函数内部的this指向window，需要对函数bind this
+2.callback函数为箭头函数的时候，callback函数的this会指向他的上层
