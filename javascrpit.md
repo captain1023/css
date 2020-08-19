@@ -198,3 +198,13 @@ END
 promise的then方法传入的是一个callback函数的参数，
 1.callback函数为匿名函数的时候，call函数内部的this指向window，需要对函数bind this
 2.callback函数为箭头函数的时候，callback函数的this会指向他的上层
+
+
+
+
+bind绑定
+bind绑定是软绑定 new的优先级比bind高
+bind() 方法创建一个新的函数，在 bind() 被调用时，这个新函数的 this 被指定为 bind() 的第一个参数，而其余参数将作为新函数的参数，供调用时使用。
+bind可以在function后直接调用
+
+apply（this,arguments(数组等)） call(this,arg1,arg2,arg3)参数李贝奥
