@@ -1,3 +1,59 @@
+##执行环境以及作用域
+每个函数都有自己的执行环境。当执行流进入一个函数当时候，函数当环境就会被推入一个环境栈中。而在函数执行之后，栈将其环境弹出，把控制权返回 之前的执行环境。
+
+4.2.2 没有块级作用域
+  1.声明变量
+    使用var声明的变量会自动被添加到最接近的环境中。在函数内部，最接近的环境就是函数的局部环境。在with中，最接近的环境是函数环境。如果初始化变量没有使用var，则变量会被自动添加到全局环境。
+
+## 引用类型
+  5.1 Object类型
+    创建object实例的方式有两种
+    5.1.1 使用new操作符 var person = new Object();
+    5.1.2 使用对象字面量表示法 var person = { name:"aaa",age:"11"};
+    5.2.3 通过"."访问对象object中的属性（不支持变量形式） 通过"[]"访问的object中属性，支持变量
+  5.2 Array类型
+    var colors = new Array();
+    var colors = new Array(20);                 创建包含20项的数组
+    var colors = new Array("red","blue","green")
+    字面量创建方法
+    var colors = ["red","blue","green"]
+    vard names = []
+    数组中的length不只是“只读的”，因此可以通过设置这个属性，从数组的末尾移除项或向数组中添加新项。（被删除和新扩张的项是undefined）
+    使用length在数组末尾添加新项：colors[colors.length] = "black"
+    5.2.1
+    检测数组:单全局环境（就一个标签页）使用(value instanceof Array)即可 通用Array.isArray(value)
+    数组模拟栈(pop(),push(),LIFO)
+    数组模拟队列(shift(),push(),FIFO)
+    数组排序 var values = [0,1,2,3] values.sort(compare)
+    function compare(v1,v2){
+      //
+    }
+    数组剪裁: slice(begin,end)
+             slice如果只传入begin则会从begin开始复制到结尾
+             slice如果传入end，则会复制到end-1
+             slice如果传入负数，则用数组长度加上该数字确定位置，如果end比begin要小，返回空数组
+
+             splice()
+             删除：splice(0,2)删除前两项
+             插入:splice(2,0,"red","green")从当前数组到位置2开始插入"red" "green"
+             替换:splice(2,1,"red,"green")删除当前数组位置2并插入"red" "green"
+    数组位置方法：indexOf(value,index) lastindexOf(value,index)
+                一个从前往后着 一个从后往前找
+                value=要查找到项, index=从哪里开始查找
+    数组迭代方法：
+              every(fucntion(item,value,array),this(默认是本身))
+                若每一项都返回true则返回true
+              filter()
+                给每一项运行给定函数，返回该函数会返回true的项组成的数组
+              forEach()
+                对每一项运行给定函数，没有返回值
+              map()
+                对每一项运行给定函数，返回每次调用结果组成对数组
+              some()
+              若有一项返回true则返回ture
+    "TODO:跳过了DATE和Regex"
+    5.5 Function()
+    函数实际上是对象。每个函数都是Function类型的实例，而且都与其他引用类型一样具有属性和方法。由于函数是对象，因此函数名实际上也是一个指向函数对象的指针，不会与某个函数绑定
 ##Javascript
 
 
@@ -632,6 +688,9 @@ function SuperType(){
 function SubType(){
 //继承了SuperType
   SuperType.call(this);
+  //  解决了数据共享和传递参数问题
+  // call方法会调用函数且指定this
+  //  SuperType.call(this,arguments);
 }
 var instance1 = new SubType();
 instance1.colors.push("black");
@@ -640,3 +699,122 @@ var instance2 = new SubType();
 alert(instance2.colors); //"red,blue,green"
 
 ```
+借用构造函数的问题：方法都在构造函数中定义，函数没办法复用
+                 父类原型中定义的方法，对子类也不可见
+
+6.3.3组合继承
+使用原 型链实现对原型属性和方法的继承，而通过借用构造函数来实现对实例属性的继承。
+
+```
+function SuperType(name){
+  this.name = name;
+  this.colors = ["red", "blue", "green"];
+}
+SuperType.prototype.sayName = function(){
+  alert(this.name);
+ };
+ function SubType(name, age){
+  //继承属性
+  SuperType.call(this, name);
+  this.age = age;
+  }
+//继承方法
+SubType.prototype = new SuperType();
+SubType.prototype.sayAge = function(){
+  alert(this.age);
+};
+
+var instance1 = new SubType("Nicholas", 29);
+instance1.colors.push("black");
+alert(instance1.colors); //"red,blue,green,black"
+instance1.sayName();  //"Nicholas";
+instance1.sayAge();//29
+var instance2 = new SubType("Greg", 27);
+alert(instance2.colors); //"red,blue,green"
+instance2.sayName();  //"Greg";
+instance2.sayAge();//27
+
+```
+组合继承在继承的时候调用了两次superType，创建了不必要的属性
+解决方案：寄生组合继承
+```
+function object(o){
+    function F(){}
+    F.prototype = o;
+    return new F();
+}
+
+function inheritPrototype(subType, superType){
+  var prototype = object(superType.prototype); //创建对象
+  prototype.constructor = subType;
+  subType.prototype = prototype;
+}
+
+
+function SuperType(name){
+  this.name = name;
+  this.colors = ["red", "blue", "green"];
+}
+SuperType.prototype.sayName = function(){
+  alert(this.name);
+};
+function SubType(name, age){
+  SuperType.call(this, name);
+  this.age = age;
+}
+inheritPrototype(SubType, SuperType);
+SubType.prototype.sayAge = function(){
+  alert(this.age);
+};
+
+```
+
+
+##函数表达式
+1.函数声明
+
+```
+  function functionName（arg0,agr1,arg2）{
+    //body
+  }
+
+
+  sayHi();          //可以使用，在执行代码前会先读取函数声明
+  funciton sayHi(){
+    alert("Hi")
+  }
+```
+
+2.函数表达式
+```
+var sayHi = function(){
+  alert("Hi")
+};
+```
+
+
+匿名函数的执行环境具有全局性
+前面曾经提到过，每个函数在被调用时，其活动对象都会自动取得两个特殊变量:this 和arguments 。内部函数在搜索这两个变量时，只会搜索到其活动对象为止，因此永远 不可能直接访问外部函数中的这两个变量
+。不过， 把外部作用域中的this 对象保存在一个闭包能够访问到的变量里，就可以让闭包访问该 对象了，如下所示。
+
+
+```
+var name = "The Window";
+var object = {
+    name : "My Object",
+    getNameFunc : function(){
+        var that = this;
+        return function(){
+                return that.name;
+              };
+      }
+};
+alert(object.getNameFunc()()); //"My Object"
+```
+
+闭包会引用包含函数的整个活动对象
+可以利用闭包模仿块级作用域 和私有变量
+
+
+
+### 事件
