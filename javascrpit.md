@@ -53,8 +53,67 @@
               若有一项返回true则返回ture
     "TODO:跳过了DATE和Regex"
     5.5 Function()
-    函数实际上是对象。每个函数都是Function类型的实例，而且都与其他引用类型一样具有属性和方法。由于函数是对象，因此函数名实际上也是一个指向函数对象的指针，不会与某个函数绑定
-##Javascript
+    函数实际上是对象。每个函数都是Function类型的实例，而且都与其他引用类型一样具有属性和方法。由于函数       
+    是对象，因此函数名实际上也是一个指向函数对象的指针，不会与某个函数绑定
+    声明方法：
+    function sum(num1,num2)           函数声明语法
+    var sum = function(num1,num2){}   函数表达式
+    var sum = new Function(num1,num2,"return num1+num2")//构造函数 不推荐
+
+####函数声明和函数表达式
+      函数声明会有函数声明提升的过程(即在全局环境中会预先解析函数名)
+       ```
+         alert(sum(10,10))
+         fucntion sum (num1,num2){
+           //可以运行
+           //
+         }
+       ```
+    5.5.3作为值的函数
+    函数可以作为值来使用。也就是说，不仅可以像传递参数一样把一个函数传递给另一个函数，而且可以讲一个函数作为另一个函数的结果返回
+
+    ```
+      function createComparisonFunction(propertyName){
+        return function(obj1,obj2){
+          var value1 = obj1[propertyName];
+          var value2 = obj2[propertyName];
+          if(value1<value2) return -1;
+          if(value1>value2) return 1;
+          if(value1== value2) return 0;
+        }
+      }
+
+      var data = [{name:"Zachary",age:28},{name:"Nicholas",age:29}];
+
+      data.sort(createComparisonFunction("name"))//注:sort(function(））
+
+    ```
+    5.5.4函数内部属性(arguments this)
+    argument:主要功能是为了保存传入的参数 和callee指针(指向拥有这个argument的函数)
+    this:this应用的是函数数据执行的环境对象
+
+    函数的属性和方法:
+    length:表示函数希望接收的命名参数的个数
+    apply(this,参数数组):
+    call(this,参数列表):
+
+###基本包装类型 Boolean Number String
+```
+  var s1 = "some text"
+  var s2 = s1.substring(2)
+```
+s1包含一个字符串，字符串当然是基本类型值。而下一行调用了s1的substring()方法，并将返回的结果保存在了s2中。我们知道，基本类型值不是对象，能完成此类操作后台自动完成了一系列处理。
+1.创建String类型实例
+2.在实例上调用指定方法
+3.销毁实例
+
+```
+var s1 = "some text";
+s1.color = "red";
+alert(s1.color); //undefined 在第二行执行完对象在第三行之前就销毁了
+```
+
+##Javascript 面向对象的程序设计
 
 
 函数调用模式 : 当一个函数并非一个对象的属性的时候，那么它就是被当作一个函数调用的。通过函数模式调用，此时的this被绑定到全局对象。
@@ -768,6 +827,144 @@ SubType.prototype.sayAge = function(){
 };
 
 ```
+
+###继承总结：
+1.原型链实现继承 缺点：引用类型属性共享
+
+```
+function SuperType(){
+  this.colors = ["red","blue","green"]
+}
+
+fucntion SubType(){
+}
+//继承了superType subType中有实例自己的属性和prototype中的属性
+//问题：数据共享
+SubType.prototype = new SuperType();
+
+```
+2.为解决引用类型共享问题引入：借用构造函数---在子类对构造函数中给父类绑定this
+                          解决了属性共享问题和传递参数问题
+                          构造函数问题：方法都在构造函数中定义，函数无法复用
+                          每个对象都包含同样都函数但不是同一个函数 浪费内存
+```
+function SuperType(name){
+  this.colors = ["red","blue","green"]
+  this.name = name;
+}
+
+function subType(name){
+  //继承SuperType并传递name属性
+  SuperType.call(this,name)
+  //实例属性
+  this.age = 29
+}
+
+
+var instance = new SubType();
+
+```
+
+3.为了借用构造函数问题和属性共享问题引入 组合继承 ---- 构造函数继承私有属性，原型链继承方法和公共属性
+
+```
+fucntion SuperType(name){
+  this.name = name;
+  this.colors = ["red","blue","green"]
+}
+
+SuperType.prototype.sayName = function(){
+  alert(this.name)
+}
+
+
+function SubType(name,age){
+  //继承属性
+  SuperType.call(this,name)
+  //子类属性
+  this.age = age
+}
+//继承方法
+subType.prototype = new SuperType();
+SubType.prototype.sayAge = function(){
+  alert(this.age)
+}
+```
+
+4.原型式继承（基于已有但对象来继承）
+```
+function object(o){   //Javascript5实现了object.create
+    function F(){}
+    F.prototype = o;
+    return new F();
+}
+var person={
+    name:"test"
+    friends:["1","2","3"]
+
+}
+var person1 = object(person)    //用用相同的prptotype
+var person2 = object(person)
+
+
+```
+5.寄生式继承 （基于原有对象并加入子对象的私有属性）
+```
+function createAnother(original){
+  var clone = object(original)    //创建新对象
+  clone.sayHi=function(){         //增强对象
+    alert("Hi")
+  }
+  return clone                   //返回对象
+}
+问题：做不到函数复用
+```
+
+6.寄生组合式继承：为了弥补组合继承调用两次父类构造函数的问题
+          思路： 不必为了指定的子类型的原型而调用超类型的构造函数，我们所需要的无非是一个超类型原型的一个副本。本质上，就是使用寄生式继承来继承超类型的原型，然后在将结果给指定子类型的原型。
+          借用构造器继承属性
+          手动实现原型链继承
+
+```
+function inheritPrototype(subType,superType){
+  var prototype = object(superType);
+  prototype.constructor = subType
+  subType.prototype=prototype
+}
+
+fucntion SuperType(name){
+  this.name = name;
+  this.colors = ["red","blue","green"]
+}
+
+SuperType.prototype.sayName = function(){
+  alert(this.name)
+}
+
+function SubType(name,age){
+  //继承属性
+  SuperType.call(this,name)
+  //子类属性
+  this.age = age
+}
+
+inheritPrototype(subType,superType)
+
+subType.prototype.sayAge= function(){
+  alert(this.age)
+}
+```
+
+
+
+
+
+
+
+
+
+
+
 
 
 ##函数表达式
