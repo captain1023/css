@@ -967,51 +967,163 @@ subType.prototype.sayAge= function(){
 
 
 
-##函数表达式
-1.函数声明
+## 7 函数表达式
+7.1 递归
+    1.通过argument.callee() 实现递归可以避免递归函数名变化造成的错误
+
+7.2 闭包
+    概念:闭包是指有权访问另一个函数作用域中的变量函数。
+    常见创建方式:在一个函数内创建另一个函数.
 
 ```
-  function functionName（arg0,agr1,arg2）{
-    //body
+  function A (args){
+    var var1 = 0;
+    var var2 = 0;
+    return B(){
+        //
+    }
   }
 
+//此处function A的活动对象有 args, var1,var2,this
 
-  sayHi();          //可以使用，在执行代码前会先读取函数声明
-  funciton sayHi(){
-    alert("Hi")
+var tmp = A(args)
+在执行完这个function A 函数后 var1 和var2仍然存在内存中
+因为tmp(返回的匿名函数)仍旧在引用var1 var2
+
+```
+
+
+7.2.1 闭包和变量
+          闭包的副作用：闭包只能取得包含函数中任何变量的最后一个值。
+          闭包所保存的是整个变量对象，而不是某个特殊的变量。
+```
+function creatFunctions(){
+  var result = new Array();
+
+  for(var i = 0 ; i <10;i++){
+    result[i] = function(){
+      //闭包
+      return i;
+    };
   }
-```
-
-2.函数表达式
-```
-var sayHi = function(){
-  alert("Hi")
-};
+  return result;
+}
+//返回的数组里面都是10
+闭包内引用的外部活动对象i 而不是值。
+//测试结果返回的是包含10个function的数组
 ```
 
 
 匿名函数的执行环境具有全局性
-前面曾经提到过，每个函数在被调用时，其活动对象都会自动取得两个特殊变量:this 和arguments 。内部函数在搜索这两个变量时，只会搜索到其活动对象为止，因此永远 不可能直接访问外部函数中的这两个变量
-。不过， 把外部作用域中的this 对象保存在一个闭包能够访问到的变量里，就可以让闭包访问该 对象了，如下所示。
+this的指向:
+        1.fuction调用指向当前的执行环境
+        2.对象方法调用指向调用对象
+        3.
 
 
 ```
 var name = "The Window";
-var object = {
-    name : "My Object",
-    getNameFunc : function(){
-        var that = this;
-        return function(){
-                return that.name;
-              };
+var person = {
+    name : "Alan",
+    sayOne:function(){
+      alert(this.name)                    //Alan
+    }
+
+    sayTwo:function(){
+      //这里的this指向person 对象
+      return function(){
+
+        alert(this.name)                  //The Window
       }
+    }
 };
-alert(object.getNameFunc()()); //"My Object"
+  person.sayOne() //Alan  
+  person.sayTwo() //The Window
+  sayOne通过对象方法调用指向person对象
+  sayTwo通过对象方法调用指向person对象，但SayTwo返回一个匿名函数，此匿名函数执行时当前环境是全局环境，故此this指向window
 ```
 
 闭包会引用包含函数的整个活动对象
 可以利用闭包模仿块级作用域 和私有变量
+```
+(function(){
+    //块级作用域，声明的变量出了函数会被销毁
+  })();//立刻执行
 
 
+//好处：减少闭包占用的内存问题，没有指向匿名函数的引用。只要函数执行完毕，就可以立即销毁其作用域链
+```
+
+私有变量：利用构造函数来生成私有变量
+```
+function MyObject(){
+  //私有变量和私有函数
+  var privateVariable = 10;
+   function privateFunction(){
+     return false;
+    }
+//特权方法
+this.publicMethod = function (){
+         privateVariable++;
+         return privateFunction();
+     };
+}
+
+var obj1 = new MyObject();
+alert(ojb1.privateVariable) //undefined
+原因在new对象的时候没有把privateVarible绑定到对象上，只绑定了特权方法
+故此实现私有变量
+缺点：只能使用构造函数模式，每个对象的方法和属性都是重新生成(构造函数创建对象的问题)
+```
+
+静态私有变量
+```
+(function(){
+
+  var privateVarible = 10;
+  function privateVarible(){
+    return false;
+  }
+
+  //构造函数
+  //没有使用函数声明而是使用了函数表达式
+  //函数声明只能创建局部函数，函数表达式会在js运行时确定，并在赋值完后才能调用
+  //MyObject 也没有使用var关键词 初始化未经声明的变量，总是会创建一个全局变量
+  //严格模式下报错
+  MyObject = function(){};
+
+  //公有方法
+  MyObject.prototype.publicMethod = function(){
+    privateVariable++;
+    return privateFunction();
+  }
+
+
+})();
+
+
+```
+
+模块模式 ---为单例创建私有变量和方法
+
+```
+var singleton = function(){
+
+    var privateVarible = 10;
+
+    function privateFunction(){
+      return false;
+    }
+    return {
+          publicProperty:true,
+          publicMethod:function(){
+            privateVarible++;
+            return privateFunction();
+          }
+    }
+}()''
+
+//立刻执行并返回字面量对象
+```
 
 ### 事件
