@@ -240,73 +240,7 @@ return语句可用来使函数提前返回。当return被执行时，函数立�
 我们传递一个函数作为参数给send_request_asynchronously函数，一旦接收到响应，它 就会被调用。
 
 
-##模块Module
-我们可以使用函数和闭包来构造模块。模块是一个提供接口却隐藏状态与实现的函数 或对象
-https://blog.csdn.net/ying422/article/details/45152967
 
-
-##柯里化 curry （多个函数降级处理）
-https://juejin.im/post/6844903603266650125
-
-##记忆 memoization
-
-
-函数可以将先前操作的结果记录在某个对象里，从而避免无谓的重复运算。这种优化 被称为记忆 (7) (memoization )。
-
- ```
- 实现原理：生成一个闭包记忆数组，储存结果可以隐藏在闭包中
-    var fibonacci = function ( ) {
-       var memo = [0, 1];
-       var fib = function (n) {
-          var result = memo[n];
-          if (typeof result !== 'number') {
-result = fib(n - 1) + fib(n - 2);
-             memo[n] = result;
-          }
-          return result;
-       };
-       return fib;
-    }( );
-
-
-
-//现在，我们可以使用memoizer函数来定义fibonacci函数，提供其初始的memo数组和 formula函数:
-
-
-var fibonacci = memoizer([0, 1], function (recur, n) {
-   return recur (n - 1) + recur (n - 2);
-});
-
-
-
-
- ```
-
-
-##继承
-Javascript是一门基于原型的语言，这意味着对象直接从其他对象继承。
-####对象说明符
-在这种情况下，如果我们在编写构造器时让它接受一个简单的对象说明符，可能会更 加友好。那个对象包含了将要构建的对象规格说明。所以，与其这样写:
-```
-    var myObject = maker(f, l, m, c, s);
-
-    //改良后
-    var myObject = maker({
-       first: f,
-       middle: m,
-       last: l,
-       state: s,
-       city: c
-       });
-
-```
-
-##正则表达式
-
-
-END
-这本书的基本部分看完了 剩下的糟粕的没有看但占据了很大但篇幅
-接下来打算看看express框架并且实战
 
 
 
@@ -317,14 +251,13 @@ promise的then方法传入的是一个callback函数的参数，
 
 
 
-bind绑定
+###bind绑定
 bind绑定是软绑定 new的优先级比bind高
 bind() 方法创建一个新的函数，在 bind() 被调用时，这个新函数的 this 被指定为 bind() 的第一个参数，而其余参数将作为新函数的参数，供调用时使用。
 bind可以在function后直接调用
 
 apply（this,arguments(数组等)） call(this,arg1,arg2,arg3)参数列表
 
-今儿听了叮叮的演讲 还是向往阿里
 
 javascript变量可以保存两种类型的值：基本类型和引用类型
   基本类型值在内存中占据固定大小的空间，因此被保存在栈内存中;
@@ -333,81 +266,10 @@ javascript变量可以保存两种类型的值：基本类型和引用类型
   从一个变量向另一个变量复制引用类型的值，复制的其实是指针，因此两个变量最终 都指向同一个对象;
   确定一个值是哪种基本类型可以使用typeof 操作符，而确定一个值是哪种引用类型 可以使用instanceof 操作符。
 
-JavaScript执行环境
-执行环境有全局执行环境(也称为全局环境)和函数执行环境之分;
-每次进入一个新执行环境，都会创建一个用于搜索变量和函数的作用域链;
-函数的局部环境不仅有权访问函数作用域中的变量，而且有权访问其包含(父)环
-  境，乃至全局环境;
-  变量的执行环境有助于确定应该何时释放内存。
-  全局环境只能访问在全局环境中定义的变量和函数，而不能直接访问局部环境中的任
-  何数据;
-
-
-引用类型
-
-一般来说，访问对象属性时使用的都是点表示法，这也是很多面向对象语言中通用的语 法。不过，在JavaScript也可以使用方括号表示法来访问对象的属性。在使用方括号语法 时，应该将要访问的属性以字符串的形式放在方括号中，如下面的例子所示。
-
-```
-alert(person["name"]); //"Nicholas" alert(person.name); //"Nicholas"
-```
-从功能上看，这两种访问对象属性的方法没有任何区别。但方括号语法的主要优点是可以 通过变量来访问属性，例如:
-```
-var propertyName = "name"; alert(person[propertyName]); //"Nicholas"
-```
-
-如果属性名中包含会导致语法错误的字符，或者属性名使用的是关键字或保留字，也可以 使用方括号表示法。例如:
-```
-person["first name"] = "Nicholas";
-```
-由于"first name" 中包含一个空格，所以不能使用点表示法来访问它。然而，属性名中 是可以包含非字母非数字的，这时候就可以使用方括号表示法来访问它们。
-通常，除非必须使用变量来访问属性，否则我们建议使用点表示法。
 
 
 
-5.5.2 函数声明与函数表达式
-本节到目前为止，我们一直没有对函数声明和函数表达式加以区别。而实际上，解析器在 向执行环境中加载数据时，对函数声明和函数表达式并非一视同仁。解析器会率先读取函 数声明，并使其在执行任何代码之前可用(可以访问);至于函数表达式，则必须等到解 析器执行到它所在的代码行，才会真正被解释执行。请看下面的例子。
- ```
-alert(sum(10,10));
-function sum(num1, num2){
-    return num1 + num2;
-}
-```
 
-以上代码完全可以正常运行。因为在代码开始执行之前，解析器就已经通过一个名为函数 声明提升(function declaration hoisting)的过程，读取并将函数声明添加到执行环境中。 对代码求值时，JavaScript引擎在第一遍会声明函数并将它们放到源代码树的顶部。所 以，即使声明函数的代码在调用它的代码后面，JavaScript引擎也能把函数声明提升到顶 部。如果像下面例子所示的，把上面的函数声明改为等价的函数表达式，就会在执行期间 导致错误。
-```
-alert(sum(10,10));
-var sum = function(num1, num2){
-    return num1 + num2;
-};
-```
-
-以上代码之所以会在运行期间产生错误，原因在于函数位于一个初始化语句中，而不是一 个函数声明。换句话说，在执行到函数所在的语句之前，变量sum 中不会保存有对函数的 引用;而且，由于第一行代码就会导致“unexpected identifier”(意外标识符)错误，实际 上也不会执行到下一行。
-除了什么时候可以通过变量访问函数这一点区别之外，函数声明与函数表达式的语法其实 是等价的。
-也可以同时使用函数声明和函数表达式，例如var sum = function sum(){} 。 不过，这种语法在Safari中会导致错误。
-
-
-
-  面向对象的程序设计
-  最简单方式就是创建一个Object 的实例，然后再为它添加属性和方法，如下所示。
-  ```
-    var person = new Object(); person.name = "Nicholas"; person.age = 29;
-    person.job = "Software Engineer";
-    person.sayName = function(){
-      alert(this.name);
-    };
-  ```
-
-  对象字面量创建对象
-```
-var person = {
-  name: "Nicholas",
-  age: 29,
-  job: "Software Engineer",
-  sayName: function(){
-    alert(this.name);
-  }
-};
-```
 
 JavaScript有两种属性：数据属性和访问器属性
 1.数据属性
@@ -498,7 +360,7 @@ Object.defineProperties(book, { _year: {
 
 ```
 
-创建对象
+##创建对象
 
 虽然Object 构造函数或对象字面量都可以用来创建单个对象，但这些方式有个明显的缺 点:使用同一个接口创建很多对象，会产生大量的重复代码。为解决这个问题，人们开始 使用工厂模式的一种变体。
 
@@ -703,130 +565,7 @@ return o;
 var friend = Person("Nicholas", 29, "Software Engineer");
 friend.sayName(); //"Nicholas"
 ```
-6.3继承
-通过原型链来实现继承
-子类型的prototype设置为父类型的实例
-通过原型链实现继承的时，不能使用对象字面量创建原型方法。
 
-```
-function SuperType(){ this.property = true;
-}
-SuperType.prototype.getSuperValue = function(){ return this.property;
-};
-function SubType(){ this.subproperty = false;
-}
-//继承了SuperType
-SubType.prototype = new SuperType();
-//使用字面量添加新方法，会导致上一行代码无效
-SubType.prototype = {
-        getSubValue : function (){
-          return this.subproperty;
-        },
-        someOtherMethod : function (){
-          return false;
-      }
-};
-var instance = new SubType();
-alert(instance.getSuperValue());
-//error!
-
-```
-
-原型链继承的问题：
-1.子类型的原型是父类型的实例，那么父类型的引用类型数据（数组）将被共享
-2.创建子类型实例的时候，不能向超类的构造函数中传递参数。
-
-解决方案１：
-借用构造函数
-这种技术 的基本思想相当简单，即在子类型构造函数的内部调用超类型构造函数。
-别忘了，函数只 不过是在特定环境中执行代码的对象，因此通过使用apply() 和call() 方法也可以在 (将来)新创建的对象上执行构造函数
-```
-function SuperType(){
-  this.colors = ["red", "blue", "green"];
-}
-function SubType(){
-//继承了SuperType
-  SuperType.call(this);
-  //  解决了数据共享和传递参数问题
-  // call方法会调用函数且指定this
-  //  SuperType.call(this,arguments);
-}
-var instance1 = new SubType();
-instance1.colors.push("black");
-alert(instance1.colors); //"red,blue,green,black"
-var instance2 = new SubType();
-alert(instance2.colors); //"red,blue,green"
-
-```
-借用构造函数的问题：方法都在构造函数中定义，函数没办法复用
-                 父类原型中定义的方法，对子类也不可见
-
-6.3.3组合继承
-使用原 型链实现对原型属性和方法的继承，而通过借用构造函数来实现对实例属性的继承。
-
-```
-function SuperType(name){
-  this.name = name;
-  this.colors = ["red", "blue", "green"];
-}
-SuperType.prototype.sayName = function(){
-  alert(this.name);
- };
- function SubType(name, age){
-  //继承属性
-  SuperType.call(this, name);
-  this.age = age;
-  }
-//继承方法
-SubType.prototype = new SuperType();
-SubType.prototype.sayAge = function(){
-  alert(this.age);
-};
-
-var instance1 = new SubType("Nicholas", 29);
-instance1.colors.push("black");
-alert(instance1.colors); //"red,blue,green,black"
-instance1.sayName();  //"Nicholas";
-instance1.sayAge();//29
-var instance2 = new SubType("Greg", 27);
-alert(instance2.colors); //"red,blue,green"
-instance2.sayName();  //"Greg";
-instance2.sayAge();//27
-
-```
-组合继承在继承的时候调用了两次superType，创建了不必要的属性
-解决方案：寄生组合继承
-```
-function object(o){
-    function F(){}
-    F.prototype = o;
-    return new F();
-}
-
-function inheritPrototype(subType, superType){
-  var prototype = object(superType.prototype); //创建对象
-  prototype.constructor = subType;
-  subType.prototype = prototype;
-}
-
-
-function SuperType(name){
-  this.name = name;
-  this.colors = ["red", "blue", "green"];
-}
-SuperType.prototype.sayName = function(){
-  alert(this.name);
-};
-function SubType(name, age){
-  SuperType.call(this, name);
-  this.age = age;
-}
-inheritPrototype(SubType, SuperType);
-SubType.prototype.sayAge = function(){
-  alert(this.age);
-};
-
-```
 
 ###继承总结：
 1.原型链实现继承 缺点：引用类型属性共享
@@ -903,7 +642,7 @@ var person={
     friends:["1","2","3"]
 
 }
-var person1 = object(person)    //用用相同的prptotype
+var person1 = object(person)    //用相同的prptotype
 var person2 = object(person)
 
 
