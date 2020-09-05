@@ -865,4 +865,106 @@ var singleton = function(){
 //立刻执行并返回字面量对象
 ```
 
-### 事件
+### BOM
+
+####窗口总结
+  1.window是全局对象
+  2.如果页面中包含框架(frame),则每个框架都拥有自己的Window对象并保存在frames中
+    可以荣国window.frames[0]/window.frames["topFrame"]/window.frames["leftFrame"]
+  3.窗口位置
+    取得窗口在屏幕上的位置:windows.screenLeft/windows.screenRight
+    移动窗口位置：
+    window.moveTo(0,9)  //移动到屏幕左上角
+    windows.moveBy(0,100)//向下移动100像素
+  4.导航和打开窗口
+    var wroxWin = window.open(URL,窗口目标，特性字符串)
+
+
+    返回一个新窗口的引用
+    ```
+      window.open("http://www.wrox.com/", topFrame");
+      //等同于< a href="http://www.wrox.com" target="topFrame"></a>
+
+      如果有一个叫topFrame的窗口或者框架，就会在该窗口或框架加载这个URL
+      否则会创建一个新的窗口并将其命名为topFrame
+    ```
+
+      4.1 弹出窗口
+        如果给window.open()传递的第二个参数并不存在，那么会根据第三个参数传入的字符串穿件一个新的窗口或者标签页（）。如果没有传入则全部默认
+        ```
+          window.open("http://www.wrox.com/","wroxWindow",
+         "height=400,width=400,top=10,left=10,resizable=yes");
+         可以设置多个属性，字符串中用","隔开
+        ```
+
+      5.关闭窗口
+      关闭窗口 wroxWin.close()
+      浏览器的主窗口在不经过用户允许是不可以关闭自己，但弹出窗口可以关闭自己
+
+      6.新窗口的原始窗口
+        新创建的window对象有一个openner属性，其中保存着打开它的原始窗口对象。
+
+      7.窗口间的通信
+        有些浏览器(IE8,Chrome)会在独立的进程中运行每个标签页。当一个标签页打开另一个标签页时，如果两个window对象之间需要彼此通信，那么新标签页就不能运行在独立的进程中。在Chrome中，将新创建的标签页的opener设置为null，即表示在单独的进程中运行新标签页。
+      8.弹出窗口被窗口屏蔽程序屏蔽后返回null
+
+
+#### 间歇调用和超时调用(setTimeout(),setInterval())
+      1.宏任务、微任务、event-loop
+        1.1会首先执行同步代码，同步代码中检查微任务，下一个宏任务
+        1.2当前宏任务的微任务没有结束则不会调用下一个宏任务
+        1.3 new promise((resolve,reject)=>{
+            resolve()
+            console.log("111")//这里是同步代码
+          }).then(()=>{
+              //这里才是异步代码 微任务
+            })
+        1.4 event-loop会定期检查当前宏任务还有没有微任务，如果没有则进入下一个宏任务
+      2.setTimeout(),setInterval()会返回一个调用ID 根据这个ID可以取消调用
+        clearTimtout(),clearInterval()
+
+####系统对话框
+    1.alert()
+    2.confirm()如果点ok返回true,点cancel返回false
+    3.prompt() 提示框
+    ```
+      var result = prompt("what is your name?","");
+      if (result !== null){
+        alert("Welcome,"+result)
+      }
+    ```
+
+####location对象
+    1.window.location和document.location引用的同一个对象
+    location包含hash,host,hostname,href,pathname,port,protocol,search等属性
+    2.使用locaton.assign("http://www.wrox.com")可以立刻打开新的URL
+    3.改变URL都会以新URL重新加载并保存在历史记录中(可以通过浏览器后退)
+    4.可以使用location.replace(http://www.wrox.com)禁用, replace函数不会生成历史记录
+    5.location.reload()//如果服务器没有改变则从缓存中加载
+      location.reload(true)//从服务器加载
+
+#### navigator对象
+    1.有很多属性用来检测浏览器信息
+#### screen对象
+    1.用来储存显示器的信息
+#### history对象
+    1.history.go()//参数可以是1,-1,URL(跳转到最近的)
+    2.history.back() history.forward()
+    3.history有length属性，可以用于确定用户是否一开始就打开了你的页面
+#### DOM
+    1.nodeName 元素的标签名
+    2.DOM可以看作树状图，每个节点都有childNodes属性(类array对象)且动态更新
+
+
+###事件
+
+
+
+
+
+###JSON
+
+
+
+
+##Ajax and Comet
